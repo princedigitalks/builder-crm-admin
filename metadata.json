@@ -1,0 +1,5 @@
+{
+  "name": "BuildFlow CRM Admin",
+  "description": "Super Admin dashboard for managing builders, subscriptions, and WhatsApp activity.",
+  "requestFramePermissions": []
+}
