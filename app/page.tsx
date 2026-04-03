@@ -25,6 +25,7 @@ import {
   Clock
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { cn } from '@/lib/utils';
 import { 
   BarChart, 
   Bar, 
@@ -32,10 +33,8 @@ import {
   YAxis, 
   CartesianGrid, 
   Tooltip, 
-  ResponsiveContainer,
-  Cell,
-  PieChart,
-  Pie
+  ResponsiveContainer, 
+  Cell
 } from 'recharts';
 
 // --- Mock Data ---
@@ -81,58 +80,60 @@ const Sidebar = ({ activePage, setActivePage }: { activePage: string, setActiveP
   const sections = Array.from(new Set(navItems.map(item => item.section)));
 
   return (
-    <aside className="w-[230px] h-screen bg-sidebar border-r border-border flex flex-col fixed top-0 left-0 z-50">
-      <div className="p-5 border-b border-border">
+    <aside className="w-64 h-screen bg-white border-r border-slate-200 flex flex-col fixed top-0 left-0 z-50">
+      <div className="p-6 border-b border-slate-100">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center font-syne font-bold text-white">
+          <div className="w-10 h-10 bg-accent rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-indigo-100">
             BF
           </div>
           <div>
-            <div className="font-syne font-bold text-base tracking-tight">BuildFlow</div>
-            <div className="text-[9px] bg-accentbg text-accent2 px-1.5 py-0.5 rounded border border-accent/40 font-medium tracking-wider">
-              SUPER ADMIN
-            </div>
+            <h1 className="font-bold text-slate-900 leading-tight">BuildFlow</h1>
+            <span className="text-[10px] font-bold text-accent uppercase tracking-widest bg-accentbg px-1.5 py-0.5 rounded">SUPER ADMIN</span>
           </div>
         </div>
       </div>
 
-      <nav className="flex-1 p-3 flex flex-col gap-0.5 overflow-y-auto">
+      <nav className="flex-1 p-4 flex flex-col gap-8 overflow-y-auto mt-2">
         {sections.map(section => (
-          <React.Fragment key={section}>
-            <div className="text-[10px] uppercase tracking-widest text-hint font-semibold px-2 py-3 mt-2">
-              {section}
+          <div key={section}>
+             <p className="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-[0.15em] mb-4">{section}</p>
+             <div className="space-y-1">
+              {navItems.filter(item => item.section === section).map(item => (
+                <button
+                  key={item.id}
+                  onClick={() => setActivePage(item.id)}
+                  className={cn(
+                    "w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 group text-sm",
+                    activePage === item.id 
+                      ? "bg-accentbg text-accent font-semibold" 
+                      : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
+                  )}
+                >
+                  <item.icon size={18} className={cn(activePage === item.id ? "text-accent" : "text-slate-400 group-hover:text-slate-600")} />
+                  <span>{item.label}</span>
+                  {item.badge && (
+                    <span className={cn(
+                      "ml-auto text-[10px] px-1.5 py-0.5 rounded-full font-bold",
+                      activePage === item.id ? "bg-accent text-white" : "bg-slate-200 text-slate-600"
+                    )}>
+                      {item.badge}
+                    </span>
+                  )}
+                </button>
+              ))}
             </div>
-            {navItems.filter(item => item.section === section).map(item => (
-              <button
-                key={item.id}
-                onClick={() => setActivePage(item.id)}
-                className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg transition-all text-[13.5px] ${
-                  activePage === item.id 
-                    ? 'bg-accentbg text-accent2 border border-accent/30' 
-                    : 'text-muted hover:bg-card hover:text-text'
-                }`}
-              >
-                <item.icon size={18} className="opacity-80" />
-                {item.label}
-                {item.badge && (
-                  <span className="ml-auto bg-accent text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold">
-                    {item.badge}
-                  </span>
-                )}
-              </button>
-            ))}
-          </React.Fragment>
+          </div>
         ))}
       </nav>
 
-      <div className="p-3 border-t border-border">
-        <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-card cursor-pointer transition-colors">
-          <div className="w-8 h-8 rounded-full bg-accent flex items-center justify-center text-xs font-bold text-white">
+      <div className="p-4 border-t border-slate-100">
+        <div className="flex items-center gap-3 p-2 rounded-xl hover:bg-slate-50 cursor-pointer transition-colors">
+          <div className="w-9 h-9 rounded-full bg-accentbg flex items-center justify-center text-accent font-bold text-sm">
             SA
           </div>
-          <div className="flex flex-col">
-            <span className="text-[13px] font-medium leading-tight">Super Admin</span>
-            <span className="text-[11px] text-muted">Platform Owner</span>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-bold text-slate-900 truncate">Super Admin</p>
+            <p className="text-[10px] font-medium text-slate-500 truncate">Platform Owner</p>
           </div>
         </div>
       </div>
@@ -142,26 +143,27 @@ const Sidebar = ({ activePage, setActivePage }: { activePage: string, setActiveP
 
 const Topbar = ({ title, sub }: { title: string, sub: string }) => {
   return (
-    <header className="h-16 px-7 border-b border-border flex items-center justify-between bg-bg/80 backdrop-blur-md sticky top-0 z-40">
+    <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-8 sticky top-0 z-40">
       <div>
-        <h1 className="text-lg font-semibold font-syne">{title}</h1>
-        <p className="text-xs text-muted">{sub}</p>
+        <h2 className="text-lg font-bold text-slate-900 capitalize tracking-tight">{title}</h2>
+        <p className="text-[11px] text-slate-500 font-medium">{sub}</p>
       </div>
-      <div className="flex items-center gap-3">
+
+      <div className="flex items-center gap-4">
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-hint" size={14} />
+          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
           <input 
             type="text" 
             placeholder="Search builders..." 
-            className="bg-card border border-border text-text text-sm rounded-lg pl-9 pr-3 py-1.5 outline-none focus:border-accent/50 transition-colors w-48"
+            className="pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent transition-all w-64"
           />
         </div>
-        <button className="p-2 rounded-lg border border-border2 bg-card text-text hover:bg-card2 transition-colors relative">
+        <button className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors relative border border-slate-100">
           <Bell size={16} />
-          <span className="absolute top-2 right-2 w-1.5 h-1.5 bg-red rounded-full" />
+          <span className="absolute top-2 right-2 w-1.5 h-1.5 bg-red-500 rounded-full" />
         </button>
-        <button className="flex items-center gap-2 bg-accent hover:bg-accent2 text-white px-3.5 py-1.5 rounded-lg text-sm font-medium transition-colors">
-          <Plus size={16} />
+        <button className="flex items-center gap-2 bg-accent hover:bg-accent2 text-white px-4 py-2 rounded-xl text-sm font-bold transition-all shadow-lg shadow-indigo-100">
+          <Plus size={18} />
           Add Builder
         </button>
       </div>
@@ -169,18 +171,19 @@ const Topbar = ({ title, sub }: { title: string, sub: string }) => {
   );
 };
 
-const MetricCard = ({ label, value, change, icon: Icon, colorClass, iconClass }: any) => (
-  <div className={`bg-card border border-border rounded-2xl p-5 relative overflow-hidden group cursor-pointer transition-all hover:border-border2`}>
-    <div className={`absolute top-0 left-0 right-0 h-0.5 bg-${colorClass}`} />
-    <div className="flex items-center justify-between mb-3">
-      <span className="text-[11.5px] text-muted font-medium tracking-wide uppercase">{label}</span>
-      <div className={`w-8 h-8 rounded-lg flex items-center justify-center bg-${colorClass}bg text-${colorClass}`}>
-        <Icon size={16} />
+const MetricCard = ({ label, value, change, icon: Icon, colorClass }: any) => (
+  <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
+    <div className="flex justify-between items-start mb-4">
+      <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">{label}</span>
+      <div className={cn("p-2 rounded-xl text-white", `bg-${colorClass}`)}>
+        <Icon size={18} />
       </div>
     </div>
-    <div className="text-3xl font-bold font-syne tracking-tight">{value}</div>
-    <div className={`text-[11.5px] mt-1.5 flex items-center gap-1 ${change.startsWith('↑') ? 'text-green' : 'text-red'}`}>
-      {change}
+    <div className="flex flex-col">
+      <span className="text-3xl font-bold text-slate-900 tracking-tight">{value}</span>
+      <div className={cn("flex items-center gap-1 mt-1 text-xs font-medium", change.startsWith('↑') ? "text-emerald-600" : "text-rose-600")}>
+        {change}
+      </div>
     </div>
   </div>
 );
@@ -193,7 +196,7 @@ const Dashboard = () => {
       exit={{ opacity: 0, y: -20 }}
       className="space-y-6"
     >
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <MetricCard 
           label="Total Builders" 
           value="24" 
@@ -224,65 +227,62 @@ const Dashboard = () => {
         />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
-        <div className="lg:col-span-3 bg-card border border-border rounded-2xl overflow-hidden">
-          <div className="px-5 py-4 border-b border-border flex items-center justify-between">
-            <h3 className="font-syne font-semibold text-sm">Registered Builders</h3>
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-10">
+        <div className="lg:col-span-3 bg-white border border-slate-100 rounded-2xl shadow-sm overflow-hidden">
+          <div className="p-6 border-b border-slate-50 flex items-center justify-between">
+            <h3 className="font-bold text-slate-900">Registered Builders</h3>
             <div className="flex items-center gap-3">
-              <select className="bg-card2 border border-border text-muted text-[12.5px] rounded-lg px-2.5 py-1 outline-none cursor-pointer">
+              <select className="bg-slate-50 border border-slate-200 text-slate-500 text-xs rounded-lg px-2.5 py-1.5 outline-none cursor-pointer focus:ring-2 focus:ring-accent/20">
                 <option>All Status</option>
                 <option>Active</option>
                 <option>Suspended</option>
               </select>
-              <button className="text-xs text-accent2 hover:underline">View all →</button>
+              <button className="text-xs font-bold text-accent hover:underline">View all</button>
             </div>
           </div>
           <div className="overflow-x-auto">
-            <table className="w-full text-left">
+            <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="text-[11px] text-hint uppercase tracking-wider border-b border-border">
-                  <th className="px-5 py-3 font-medium">Company</th>
-                  <th className="px-5 py-3 font-medium">Plan</th>
-                  <th className="px-5 py-3 font-medium">Leads</th>
-                  <th className="px-5 py-3 font-medium">Status</th>
-                  <th className="px-5 py-3 font-medium">Action</th>
+                <tr className="bg-slate-50/50 text-[10px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-50">
+                  <th className="px-6 py-4">Company</th>
+                  <th className="px-6 py-4">Plan</th>
+                  <th className="px-6 py-4">Leads</th>
+                  <th className="px-6 py-4">Status</th>
+                  <th className="px-6 py-4">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-border">
+              <tbody className="divide-y divide-slate-50">
                 {builders.slice(0, 5).map(b => (
-                  <tr key={b.id} className="hover:bg-card2 transition-colors group">
-                    <td className="px-5 py-3.5">
+                  <tr key={b.id} className="hover:bg-slate-50/50 transition-colors group">
+                    <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
                         <div 
-                          className="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-[11px]"
-                          style={{ backgroundColor: `${b.color}22`, color: b.color }}
+                          className="w-9 h-9 rounded-lg flex items-center justify-center font-bold text-[11px]"
+                          style={{ backgroundColor: `${b.color}15`, color: b.color }}
                         >
                           {b.initials}
                         </div>
                         <div>
-                          <div className="text-[13px] font-medium">{b.company}</div>
-                          <div className="text-[11px] text-muted">{b.person}</div>
+                          <div className="text-sm font-bold text-slate-900">{b.company}</div>
+                          <div className="text-[11px] text-slate-500 font-medium">{b.person}</div>
                         </div>
                       </div>
                     </td>
-                    <td className="px-5 py-3.5">
-                      <span className={`text-[11px] font-semibold px-2 py-0.5 rounded ${b.planClass}`}>
+                    <td className="px-6 py-4">
+                      <span className={cn("text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider", b.plan === 'Enterprise' ? "bg-emerald-100 text-emerald-700" : "bg-indigo-100 text-indigo-700")}>
                         {b.plan}
                       </span>
                     </td>
-                    <td className="px-5 py-3.5 font-medium text-[13px]">{b.leads.toLocaleString()}</td>
-                    <td className="px-5 py-3.5">
-                      <span className={`flex items-center gap-1.5 text-[11px] font-medium px-2 py-0.5 rounded-full border ${b.statusClass}`}>
-                        <span className="w-1.5 h-1.5 rounded-full bg-current" />
+                    <td className="px-6 py-4 font-semibold text-slate-900 text-sm">{b.leads.toLocaleString()}</td>
+                    <td className="px-6 py-4">
+                      <span className={cn("text-[10px] font-bold px-2.5 py-1 rounded-full uppercase", b.status === 'Active' ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700")}>
                         {b.status}
                       </span>
                     </td>
-                    <td className="px-5 py-3.5">
-                      <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button className="p-1.5 rounded-md border border-border hover:bg-card hover:text-text text-muted transition-all">
-                          <MoreVertical size={14} />
-                        </button>
-                      </div>
+                    <td className="px-6 py-4">
+                      <button className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors opacity-0 group-hover:opacity-100">
+                        <MoreVertical size={16} />
+                      </button>
                     </td>
                   </tr>
                 ))}
@@ -291,30 +291,28 @@ const Dashboard = () => {
           </div>
         </div>
 
-        <div className="lg:col-span-2 bg-card border border-border rounded-2xl flex flex-col">
-          <div className="px-5 py-4 border-b border-border flex items-center justify-between">
-            <h3 className="font-syne font-semibold text-sm">Monthly Revenue</h3>
-            <button className="text-xs text-accent2 flex items-center gap-1">2025 <ChevronDown size={12} /></button>
+        <div className="lg:col-span-2 bg-white border border-slate-100 rounded-2xl shadow-sm flex flex-col p-6">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="font-bold text-slate-900">Monthly Revenue</h3>
+            <button className="text-xs font-bold text-accent flex items-center gap-1">2025 <ChevronDown size={14} /></button>
           </div>
-          <div className="p-5 flex-1 flex flex-col">
-            <div className="mb-6">
-              <div className="text-2xl font-bold font-syne text-blue">₹3,62,400</div>
-              <div className="text-[11.5px] text-muted mt-0.5">Total this year: <span className="text-text">₹38.1L</span></div>
+          <div className="flex-1 flex flex-col">
+            <div className="mb-8">
+              <div className="text-3xl font-bold text-slate-900 tracking-tight">₹3,62,400</div>
+              <p className="text-xs text-slate-500 font-medium mt-1">Total this year: <span className="text-slate-900">₹38.1L</span></p>
             </div>
             <div className="flex-1 min-h-[150px]">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={revData}>
                   <Bar 
                     dataKey="value" 
-                    fill="#6c63ff" 
+                    fill="#4f46e5" 
                     radius={[4, 4, 0, 0]}
-                    onMouseOver={(data, index) => {}}
                   >
                     {revData.map((entry, index) => (
                       <Cell 
                         key={`cell-${index}`} 
-                        fill={index === 9 ? '#6c63ff' : '#6c63ff22'} 
-                        stroke={index === 9 ? '#6c63ff' : '#6c63ff44'}
+                        fill={index === 9 ? '#4f46e5' : '#e2e8f0'} 
                       />
                     ))}
                   </Bar>
@@ -322,12 +320,12 @@ const Dashboard = () => {
                     dataKey="name" 
                     axisLine={false} 
                     tickLine={false} 
-                    tick={{ fontSize: 10, fill: '#545c72' }} 
+                    tick={{ fontSize: 10, fill: '#94a3b8' }} 
                   />
                   <Tooltip 
                     cursor={{ fill: 'transparent' }}
-                    contentStyle={{ backgroundColor: '#ffffff', border: '1px solid #e2e6f0', borderRadius: '8px' }}
-                    itemStyle={{ color: '#0f1117', fontSize: '12px' }}
+                    contentStyle={{ backgroundColor: '#ffffff', border: '1px solid #f1f5f9', borderRadius: '12px', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                    itemStyle={{ color: '#0f172a', fontSize: '12px', fontWeight: '600' }}
                     labelStyle={{ display: 'none' }}
                   />
                 </BarChart>
@@ -354,7 +352,7 @@ const Dashboard = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div className="bg-card border border-border rounded-2xl overflow-hidden">
           <div className="px-5 py-4 border-b border-border flex items-center justify-between">
             <h3 className="font-syne font-semibold text-sm">WhatsApp Activity</h3>
@@ -445,77 +443,81 @@ const BuildersPage = () => (
     animate={{ opacity: 1, x: 0 }}
     className="space-y-6"
   >
-    <div className="flex gap-1 bg-card2 p-1 rounded-xl w-fit">
+    <div className="flex gap-1 bg-slate-100 p-1 rounded-xl w-fit">
       {['All Builders', 'Active', 'Suspended', 'Trial'].map((tab, i) => (
         <button 
           key={tab} 
-          className={`px-4 py-1.5 rounded-lg text-xs font-medium transition-all ${i === 0 ? 'bg-accentbg text-accent2' : 'text-muted hover:text-text'}`}
+          className={cn(
+            "px-4 py-1.5 rounded-lg text-xs font-bold transition-all",
+            i === 0 ? "bg-white text-accent shadow-sm" : "text-slate-500 hover:text-slate-900"
+          )}
         >
           {tab}
         </button>
       ))}
     </div>
-    <div className="bg-card border border-border rounded-2xl overflow-hidden">
-      <div className="px-5 py-4 border-b border-border flex items-center justify-between">
-        <h3 className="font-syne font-semibold text-sm">All Registered Builders</h3>
-        <div className="flex items-center gap-3">
+    <div className="bg-white border border-slate-100 rounded-2xl shadow-sm overflow-hidden">
+      <div className="p-6 border-b border-slate-100 flex items-center justify-between">
+        <h3 className="font-bold text-slate-900 text-sm">All Registered Builders</h3>
+        <div className="flex items-center gap-4">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-hint" size={14} />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={14} />
             <input 
               type="text" 
               placeholder="Search builder..." 
-              className="bg-card2 border border-border text-text text-xs rounded-lg pl-9 pr-3 py-1.5 outline-none focus:border-accent/50 transition-colors w-40"
+              className="pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all w-48"
             />
           </div>
-          <button className="bg-accent text-white px-3 py-1.5 rounded-lg text-xs font-medium">+ Add Builder</button>
+          <button className="bg-accent text-white px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-lg shadow-indigo-100">+ Add Builder</button>
         </div>
       </div>
       <div className="overflow-x-auto">
-        <table className="w-full text-left">
+        <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="text-[11px] text-hint uppercase tracking-wider border-b border-border">
-              <th className="px-5 py-3 font-medium">Company</th>
-              <th className="px-5 py-3 font-medium">Plan</th>
-              <th className="px-5 py-3 font-medium">Users</th>
-              <th className="px-5 py-3 font-medium">Sites</th>
-              <th className="px-5 py-3 font-medium">Leads</th>
-              <th className="px-5 py-3 font-medium">Expiry</th>
-              <th className="px-5 py-3 font-medium">Status</th>
-              <th className="px-5 py-3 font-medium">Actions</th>
+            <tr className="bg-slate-50/50 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+              <th className="px-6 py-4">Company</th>
+              <th className="px-6 py-4">Plan</th>
+              <th className="px-6 py-4">Users</th>
+              <th className="px-6 py-4">Sites</th>
+              <th className="px-6 py-4">Leads</th>
+              <th className="px-6 py-4">Status</th>
+              <th className="px-6 py-4">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-border">
+          <tbody className="divide-y divide-slate-50">
             {builders.map(b => (
-              <tr key={b.id} className="hover:bg-card2 transition-colors">
-                <td className="px-5 py-4">
+              <tr key={b.id} className="hover:bg-slate-50/50 transition-colors group">
+                <td className="px-6 py-4">
                   <div className="flex items-center gap-3">
                     <div 
-                      className="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-[11px]"
-                      style={{ backgroundColor: `${b.color}22`, color: b.color }}
+                      className="w-9 h-9 rounded-lg flex items-center justify-center font-bold text-[11px]"
+                      style={{ backgroundColor: `${b.color}15`, color: b.color }}
                     >
                       {b.initials}
                     </div>
                     <div>
-                      <div className="text-[13px] font-medium">{b.company}</div>
-                      <div className="text-[11px] text-muted">{b.person}</div>
+                      <div className="text-sm font-bold text-slate-900">{b.company}</div>
+                      <div className="text-[11px] text-slate-500 font-medium">{b.person}</div>
                     </div>
                   </div>
                 </td>
-                <td className="px-5 py-4"><span className={`text-[11px] font-semibold px-2 py-0.5 rounded ${b.planClass}`}>{b.plan}</span></td>
-                <td className="px-5 py-4 text-muted text-sm">{b.users}</td>
-                <td className="px-5 py-4 text-muted text-sm">{b.sites}</td>
-                <td className="px-5 py-4 font-medium text-sm">{b.leads.toLocaleString()}</td>
-                <td className="px-5 py-4 text-muted text-xs">{b.expiry}</td>
-                <td className="px-5 py-4">
-                  <span className={`flex items-center gap-1.5 text-[11px] font-medium px-2 py-0.5 rounded-full border ${b.statusClass}`}>
-                    <span className="w-1.5 h-1.5 rounded-full bg-current" />
+                <td className="px-6 py-4">
+                  <span className={cn("text-[10px] font-bold px-2 py-0.5 rounded uppercase", b.plan === 'Enterprise' ? "bg-emerald-100 text-emerald-700" : "bg-indigo-100 text-indigo-700")}>
+                    {b.plan}
+                  </span>
+                </td>
+                <td className="px-6 py-4 text-slate-600 text-xs font-medium">{b.users} users</td>
+                <td className="px-6 py-4 text-slate-600 text-xs font-medium">{b.sites} sites</td>
+                <td className="px-6 py-4 font-bold text-slate-900 text-sm">{b.leads.toLocaleString()}</td>
+                <td className="px-6 py-4">
+                  <span className={cn("text-[10px] font-bold px-2.5 py-1 rounded-full uppercase", b.status === 'Active' ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700")}>
                     {b.status}
                   </span>
                 </td>
-                <td className="px-5 py-4">
-                  <div className="flex items-center gap-2">
-                    <button className="p-1.5 rounded-md border border-border hover:bg-card hover:text-text text-muted transition-all"><MoreVertical size={14} /></button>
-                  </div>
+                <td className="px-6 py-4">
+                  <button className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors opacity-0 group-hover:opacity-100">
+                    <MoreVertical size={16} />
+                  </button>
                 </td>
               </tr>
             ))}
@@ -530,56 +532,54 @@ const SubscriptionsPage = () => (
   <motion.div 
     initial={{ opacity: 0, scale: 0.95 }}
     animate={{ opacity: 1, scale: 1 }}
-    className="space-y-6"
+    className="space-y-8"
   >
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <div className="lg:col-span-2 bg-card border border-border rounded-2xl overflow-hidden">
-        <div className="px-5 py-4 border-b border-border flex items-center justify-between">
-          <h3 className="font-syne font-semibold text-sm">Subscription Plans</h3>
-          <button className="bg-accent text-white px-3 py-1.5 rounded-lg text-xs font-medium">+ Create Plan</button>
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="lg:col-span-2 bg-white border border-slate-100 rounded-2xl shadow-sm overflow-hidden">
+        <div className="p-6 border-b border-slate-100 flex items-center justify-between">
+          <h3 className="font-bold text-slate-900 text-sm">Subscription Plans</h3>
+          <button className="bg-accent text-white px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-lg shadow-indigo-100">+ Create Plan</button>
         </div>
-        <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="p-8 grid grid-cols-1 md:grid-cols-3 gap-6">
           {[
-            { name: 'Basic', price: '₹4,999', color: 'muted', features: ['5 Users', '1 WhatsApp Number', '500 Leads/mo', '2 Sites'] },
-            { name: 'Pro', price: '₹12,999', color: 'accent2', featured: true, features: ['20 Users', '3 WhatsApp Numbers', '5,000 Leads/mo', '10 Sites'] },
-            { name: 'Enterprise', price: '₹29,999', color: 'green', features: ['Unlimited Users', '10 WhatsApp Numbers', 'Unlimited Leads', 'Unlimited Sites'] },
+            { name: 'Basic', price: '₹4,999', color: 'slate-500', features: ['5 Users', '1 WhatsApp Number', '500 Leads/mo', '2 Sites'] },
+            { name: 'Pro', price: '₹12,999', color: 'accent', featured: true, features: ['20 Users', '3 WhatsApp Numbers', '5,000 Leads/mo', '10 Sites'] },
+            { name: 'Enterprise', price: '₹29,999', color: 'emerald-600', features: ['Unlimited Users', '10 WhatsApp Numbers', 'Unlimited Leads', 'Unlimited Sites'] },
           ].map((plan, i) => (
-            <div key={i} className={`p-5 rounded-2xl border ${plan.featured ? 'border-accent/50 bg-accentbg' : 'border-border bg-card2'} flex flex-col`}>
-              {plan.featured && <div className="text-[9px] bg-accent text-white px-2 py-0.5 rounded w-fit mb-3 font-bold tracking-wider">MOST POPULAR</div>}
-              <div className="font-syne font-semibold text-sm">{plan.name}</div>
-              <div className="mt-4 mb-1">
-                <span className="text-2xl font-bold font-syne" style={{ color: `var(--color-${plan.color})` }}>{plan.price}</span>
-                <span className="text-[11px] text-muted"> /month</span>
+            <div key={i} className={cn("p-6 rounded-3xl border flex flex-col", plan.featured ? "border-accent/20 bg-accentbg/50" : "border-slate-100 bg-slate-50/50")}>
+              {plan.featured && <div className="text-[10px] bg-accent text-white px-2 py-0.5 rounded-lg w-fit mb-4 font-bold tracking-wider">POPULAR</div>}
+              <div className="font-bold text-slate-900">{plan.name}</div>
+              <div className="mt-4 mb-2 flex items-baseline gap-1">
+                <span className={cn("text-2xl font-bold tracking-tight", plan.featured ? "text-accent" : "text-slate-900")}>{plan.price}</span>
+                <span className="text-[11px] text-slate-500 font-medium">/mo</span>
               </div>
-              <div className="space-y-2 mt-4">
+              <div className="space-y-3 mt-6">
                 {plan.features.map((f, j) => (
-                  <div key={j} className="flex items-center gap-2 text-[11.5px] text-muted">
-                    <div className="w-1 h-1 rounded-full bg-green" />
+                  <div key={j} className="flex items-center gap-2.5 text-xs text-slate-600 font-medium">
+                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                     {f}
                   </div>
                 ))}
               </div>
-              <button className={`mt-6 w-full py-2 rounded-lg text-xs font-medium transition-all ${plan.featured ? 'bg-accent text-white' : 'bg-card border border-border text-text hover:bg-border'}`}>
+              <button className={cn("mt-8 w-full py-2.5 rounded-xl text-xs font-bold transition-all", plan.featured ? "bg-accent text-white" : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-50")}>
                 Edit Plan
               </button>
             </div>
           ))}
         </div>
       </div>
-      <div className="bg-card border border-border rounded-2xl overflow-hidden">
-        <div className="px-5 py-4 border-b border-border">
-          <h3 className="font-syne font-semibold text-sm">Expiring Soon</h3>
-        </div>
-        <div className="p-5 space-y-3">
+      <div className="bg-white border border-slate-100 rounded-2xl shadow-sm overflow-hidden p-6">
+        <h3 className="font-bold text-slate-900 text-sm mb-6">Expiring Soon</h3>
+        <div className="space-y-4">
           {builders.filter(b => b.status === 'Trial' || b.expiry < '2025-11-01').map((b, i) => (
-            <div key={i} className="p-3 bg-card2 border border-border rounded-xl flex items-center justify-between">
+            <div key={i} className="p-4 bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-between group hover:border-accent/20 transition-all">
               <div>
-                <div className="text-[13px] font-medium">{b.company}</div>
-                <div className="text-[11px] text-muted">{b.plan} Plan</div>
+                <div className="text-sm font-bold text-slate-900">{b.company}</div>
+                <div className="text-[11px] text-slate-500 font-medium">{b.plan} Plan</div>
               </div>
               <div className="text-right">
-                <div className="text-[11.5px] text-amber font-medium">{b.expiry}</div>
-                <div className="text-[10px] text-hint">expiry</div>
+                <div className="text-[11px] text-amber-600 font-bold uppercase tracking-wider">{b.expiry}</div>
+                <div className="text-[10px] text-slate-400 font-medium">expiry</div>
               </div>
             </div>
           ))}
@@ -593,44 +593,42 @@ const WhatsAppPage = () => (
   <motion.div 
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
-    className="space-y-6"
+    className="space-y-8"
   >
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <MetricCard label="Active Numbers" value="18" change="↑ 2 added this week" icon={MessageSquare} colorClass="green" />
-      <MetricCard label="Messages Today" value="6,420" change="↑ 12% vs yesterday" icon={BarChart3} colorClass="amber" />
-      <MetricCard label="API Usage" value="68%" change="of monthly quota" icon={Settings} colorClass="blue" />
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <MetricCard label="Active Numbers" value="18" change="↑ 2 added this week" icon={MessageSquare} colorClass="emerald-600" />
+      <MetricCard label="Messages Today" value="6,420" change="↑ 12% vs yesterday" icon={BarChart3} colorClass="amber-600" />
+      <MetricCard label="API Usage" value="68%" change="of monthly quota" icon={Settings} colorClass="indigo-600" />
     </div>
-    <div className="bg-card border border-border rounded-2xl overflow-hidden">
-      <div className="px-5 py-4 border-b border-border flex items-center justify-between">
-        <h3 className="font-syne font-semibold text-sm">WhatsApp Numbers — All Builders</h3>
-        <button className="bg-card border border-border text-text px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-card2 transition-colors">Export Logs</button>
+    <div className="bg-white border border-slate-100 rounded-2xl shadow-sm overflow-hidden">
+      <div className="p-6 border-b border-slate-100 flex items-center justify-between">
+        <h3 className="font-bold text-slate-900 text-sm">WhatsApp Numbers — All Builders</h3>
+        <button className="bg-white border border-slate-200 text-slate-600 px-4 py-2 rounded-xl text-xs font-bold hover:bg-slate-50 transition-all">Export Logs</button>
       </div>
       <div className="overflow-x-auto">
-        <table className="w-full text-left">
+        <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="text-[11px] text-hint uppercase tracking-wider border-b border-border">
-              <th className="px-5 py-3 font-medium">Number</th>
-              <th className="px-5 py-3 font-medium">Builder</th>
-              <th className="px-5 py-3 font-medium">Assigned Site</th>
-              <th className="px-5 py-3 font-medium">Messages</th>
-              <th className="px-5 py-3 font-medium">Status</th>
-              <th className="px-5 py-3 font-medium">API Key</th>
+            <tr className="bg-slate-50/50 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+              <th className="px-6 py-4">Number</th>
+              <th className="px-6 py-4">Builder</th>
+              <th className="px-6 py-4">Site</th>
+              <th className="px-6 py-4">Messages</th>
+              <th className="px-6 py-4">Status</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-border">
+          <tbody className="divide-y divide-slate-50">
             {builders.map(b => (
-              <tr key={b.id} className="hover:bg-card2 transition-colors">
-                <td className="px-5 py-4 font-medium text-[13px]">{b.wa}</td>
-                <td className="px-5 py-4 text-muted text-sm">{b.company}</td>
-                <td className="px-5 py-4 text-muted text-sm">{b.site}</td>
-                <td className="px-5 py-4 font-bold text-accent2 text-[13px]">{b.leads.toLocaleString()}</td>
-                <td className="px-5 py-4">
-                  <span className={`flex items-center gap-1.5 text-[11px] font-medium px-2 py-0.5 rounded-full border ${b.statusClass}`}>
-                    <span className="w-1.5 h-1.5 rounded-full bg-current" />
+              <tr key={b.id} className="hover:bg-slate-50/50 transition-colors">
+                <td className="px-6 py-4 font-bold text-slate-900 text-sm">{b.wa}</td>
+                <td className="px-6 py-4 text-slate-600 text-sm font-medium">{b.company}</td>
+                <td className="px-6 py-4 text-slate-500 text-xs">{b.site}</td>
+                <td className="px-6 py-4 font-bold text-accent text-sm">{b.leads.toLocaleString()}</td>
+                <td className="px-6 py-4">
+                  <span className="inline-flex items-center gap-1.5 text-[10px] font-bold px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700 uppercase">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-600" />
                     Active
                   </span>
                 </td>
-                <td className="px-5 py-4 font-mono text-[11px] text-hint">{b.apiKey}</td>
               </tr>
             ))}
           </tbody>
@@ -646,37 +644,37 @@ const AnalyticsPage = () => (
     animate={{ opacity: 1 }}
     className="space-y-6"
   >
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
       <MetricCard label="Total Leads (All)" value="12,483" change="↑ 18% MoM" icon={Users2} colorClass="accent" />
       <MetricCard label="Closed Won" value="1,771" change="14.2% conversion" icon={ShieldCheck} colorClass="green" />
       <MetricCard label="Site Visits" value="3,104" change="↑ 8% this month" icon={ExternalLink} colorClass="amber" />
       <MetricCard label="Avg Deal Value" value="₹84L" change="Median: ₹62L" icon={IndianRupee} colorClass="blue" />
     </div>
-    <div className="bg-card border border-border rounded-2xl overflow-hidden">
-      <div className="px-5 py-4 border-b border-border">
-        <h3 className="font-syne font-semibold text-sm">Builder Performance Comparison</h3>
+    <div className="bg-white border border-slate-100 rounded-2xl shadow-sm overflow-hidden">
+      <div className="p-6 border-b border-slate-100">
+        <h3 className="font-bold text-slate-900 text-sm">Builder Performance Comparison</h3>
       </div>
       <div className="overflow-x-auto">
-        <table className="w-full text-left">
+        <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="text-[11px] text-hint uppercase tracking-wider border-b border-border">
-              <th className="px-5 py-3 font-medium">Builder</th>
-              <th className="px-5 py-3 font-medium">Total Leads</th>
-              <th className="px-5 py-3 font-medium">Contacted</th>
-              <th className="px-5 py-3 font-medium">Site Visits</th>
-              <th className="px-5 py-3 font-medium">Closed Won</th>
-              <th className="px-5 py-3 font-medium">Conversion</th>
+            <tr className="bg-slate-50/50 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+              <th className="px-6 py-4">Builder</th>
+              <th className="px-6 py-4">Total Leads</th>
+              <th className="px-6 py-4">Contacted</th>
+              <th className="px-6 py-4">Site Visits</th>
+              <th className="px-6 py-4">Closed Won</th>
+              <th className="px-6 py-4">Conversion</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-border">
+          <tbody className="divide-y divide-slate-50">
             {builders.map(b => (
-              <tr key={b.id} className="hover:bg-card2 transition-colors">
-                <td className="px-5 py-4 font-medium text-[13px]">{b.company}</td>
-                <td className="px-5 py-4 text-sm">{b.leads.toLocaleString()}</td>
-                <td className="px-5 py-4 text-muted text-sm">{(b.leads * 0.8).toFixed(0)}</td>
-                <td className="px-5 py-4 text-muted text-sm">{(b.leads * 0.15).toFixed(0)}</td>
-                <td className="px-5 py-4 font-medium text-green text-sm">{(b.leads * 0.12).toFixed(0)}</td>
-                <td className="px-5 py-4"><span className="text-green font-bold">12.4%</span></td>
+              <tr key={b.id} className="hover:bg-slate-50/50 transition-colors">
+                <td className="px-6 py-4 font-bold text-slate-900 text-sm">{b.company}</td>
+                <td className="px-6 py-4 text-sm font-medium text-slate-700">{b.leads.toLocaleString()}</td>
+                <td className="px-6 py-4 text-slate-500 text-xs">{(b.leads * 0.8).toFixed(0)}</td>
+                <td className="px-6 py-4 text-slate-500 text-xs">{(b.leads * 0.15).toFixed(0)}</td>
+                <td className="px-6 py-4 font-bold text-emerald-600 text-sm">{(b.leads * 0.12).toFixed(0)}</td>
+                <td className="px-6 py-4"><span className="text-emerald-600 font-bold text-xs bg-emerald-50 px-2 py-0.5 rounded">12.4%</span></td>
               </tr>
             ))}
           </tbody>
@@ -708,10 +706,10 @@ export default function SuperAdminDashboard() {
     <div className="flex min-h-screen bg-bg text-text selection:bg-accent/30">
       <Sidebar activePage={activePage} setActivePage={setActivePage} />
       
-      <main className="flex-1 ml-[230px] flex flex-col min-h-screen">
+      <main className="flex-1 ml-64 flex flex-col min-h-screen">
         <Topbar title={title} sub={sub} />
         
-        <div className="p-7 flex-1">
+        <div className="p-8 flex-1 max-w-[1440px] mx-auto w-full">
           <AnimatePresence mode="wait">
             <motion.div
               key={activePage}
@@ -726,43 +724,45 @@ export default function SuperAdminDashboard() {
         </div>
       </main>
 
-      {/* Add Builder Modal (Static for UI Demo) */}
-      <div className="hidden fixed inset-0 bg-black/70 z-[100] items-center justify-center backdrop-blur-sm">
-        <div className="bg-card border border-border2 rounded-2xl p-7 w-[460px] max-w-[90vw] shadow-2xl">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="font-syne font-bold text-lg">Add New Builder</h2>
-            <button className="text-muted hover:text-text text-2xl">&times;</button>
+      {/* Add Builder Modal */}
+      <div className="hidden fixed inset-0 bg-slate-900/40 z-[100] items-center justify-center backdrop-blur-sm">
+        <div className="bg-white rounded-3xl p-8 w-full max-w-lg shadow-2xl relative">
+          <div className="flex justify-between items-center mb-8">
+            <h2 className="font-bold text-xl text-slate-900">Add New Builder</h2>
+            <button className="text-slate-400 hover:text-slate-600 p-2 rounded-xl hover:bg-slate-50 transition-colors">
+              <Plus size={24} className="rotate-45" />
+            </button>
           </div>
-          <div className="space-y-4">
-            <div>
-              <label className="text-xs text-muted mb-1.5 block font-medium uppercase tracking-wider">Company Name</label>
-              <input type="text" placeholder="e.g. Skyline Infra Pvt. Ltd." className="w-full bg-card2 border border-border rounded-lg px-3 py-2 text-sm outline-none focus:border-accent/50 transition-colors" />
+          <div className="space-y-6">
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Company Name</label>
+              <input type="text" placeholder="e.g. Skyline Infra Pvt. Ltd." className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent transition-all" />
             </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className="text-xs text-muted mb-1.5 block font-medium uppercase tracking-wider">Contact Person</label>
-                <input type="text" placeholder="Full name" className="w-full bg-card2 border border-border rounded-lg px-3 py-2 text-sm outline-none focus:border-accent/50 transition-colors" />
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Contact Person</label>
+                <input type="text" placeholder="Full name" className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent transition-all" />
               </div>
-              <div>
-                <label className="text-xs text-muted mb-1.5 block font-medium uppercase tracking-wider">Phone</label>
-                <input type="text" placeholder="+91 98765 43210" className="w-full bg-card2 border border-border rounded-lg px-3 py-2 text-sm outline-none focus:border-accent/50 transition-colors" />
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Phone</label>
+                <input type="text" placeholder="+91 98765 43210" className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent transition-all" />
               </div>
             </div>
-            <div>
-              <label className="text-xs text-muted mb-1.5 block font-medium uppercase tracking-wider">Email</label>
-              <input type="email" placeholder="admin@company.com" className="w-full bg-card2 border border-border rounded-lg px-3 py-2 text-sm outline-none focus:border-accent/50 transition-colors" />
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Email</label>
+              <input type="email" placeholder="admin@company.com" className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent transition-all" />
             </div>
-            <div>
-              <label className="text-xs text-muted mb-1.5 block font-medium uppercase tracking-wider">Assign Plan</label>
-              <select className="w-full bg-card2 border border-border rounded-lg px-3 py-2 text-sm outline-none focus:border-accent/50 transition-colors">
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Assign Plan</label>
+              <select className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent transition-all appearance-none">
                 <option>Basic — ₹4,999/mo</option>
                 <option>Pro — ₹12,999/mo</option>
                 <option>Enterprise — ₹29,999/mo</option>
               </select>
             </div>
-            <div className="flex gap-3 pt-4">
-              <button className="flex-1 py-2.5 bg-card2 border border-border rounded-lg text-muted text-sm font-medium hover:bg-border transition-colors">Cancel</button>
-              <button className="flex-1 py-2.5 bg-accent text-white rounded-lg text-sm font-bold hover:bg-accent2 transition-colors shadow-lg shadow-accent/20">Create Builder</button>
+            <div className="flex gap-4 pt-4">
+              <button className="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-2xl font-bold transition-all">Cancel</button>
+              <button className="flex-1 py-3 bg-accent text-white rounded-2xl font-bold hover:bg-accent2 transition-all shadow-lg shadow-indigo-100">Create Builder</button>
             </div>
           </div>
         </div>

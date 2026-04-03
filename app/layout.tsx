@@ -1,17 +1,10 @@
 import type {Metadata} from 'next';
-import {Syne, DM_Sans} from 'next/font/google';
+import {Inter} from 'next/font/google';
 import './globals.css';
 
-const syne = Syne({
+const inter = Inter({
   subsets: ['latin'],
-  variable: '--font-syne',
-  weight: ['400', '500', '600', '700', '800'],
-});
-
-const dmSans = DM_Sans({
-  subsets: ['latin'],
-  variable: '--font-dm-sans',
-  weight: ['300', '400', '500', '700'],
+  variable: '--font-inter',
 });
 
 export const metadata: Metadata = {
@@ -21,8 +14,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({children}: {children: React.ReactNode}) {
   return (
-    <html lang="en" className={`${syne.variable} ${dmSans.variable}`}>
-      <body suppressHydrationWarning className="bg-bg text-text min-h-screen">
+    <html lang="en" className={`${inter.variable}`}>
+      <body suppressHydrationWarning className="bg-bg text-text min-h-screen font-sans">
         {children}
       </body>
     </html>
