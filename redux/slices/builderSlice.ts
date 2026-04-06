@@ -9,25 +9,30 @@ interface User {
   status: string;
 }
 
-interface Plan {
+export interface Subscription {
   _id: string;
+  planId: string;
   planName: string;
-  price: number;
-  duration: string;
+  startDate: string;
+  endDate: string;
+  amountPaid: number;
   noOfStaff: number;
   noOfSites: number;
   noOfWhatsapp: number;
+  status: 'active' | 'upcoming' | 'expired' | 'cancelled';
 }
 
 export interface Builder {
   _id: string;
   userId: User;
-  planId: Plan;
   companyName: string;
   address: string;
-  subscriptionStartDate: string;
-  subscriptionEndDate: string;
-  amountPaid: number;
+  currentLimits: {
+    noOfStaff: number;
+    noOfSites: number;
+    noOfWhatsapp: number;
+  };
+  subscriptions: Subscription[];
   isActive: boolean;
   isDeleted: boolean;
   createdAt: string;

@@ -5,7 +5,7 @@ import { MoreVertical, Mail, Phone, Calendar, Layers, HardHat } from 'lucide-rea
 import { cn } from '@/lib/utils';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/redux/store';
-import { fetchAllBuilders } from '@/redux/slices/builderSlice';
+import { fetchAllBuilders, Builder, Subscription } from '@/redux/slices/builderSlice';
 import CommonTable from '@/components/CommonTable';
 import { motion } from 'framer-motion';
 
@@ -36,7 +36,7 @@ export default function BuildersPage() {
     {
       header: "Builder & Company",
       key: "companyName",
-      render: (item: any) => (
+      render: (item: Builder) => (
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-[11px] uppercase">
              {item.companyName.slice(0, 2)}
@@ -55,7 +55,7 @@ export default function BuildersPage() {
     {
       header: "Contact Details",
       key: "phone",
-      render: (item: any) => (
+      render: (item: Builder) => (
         <div className="space-y-1">
           <div className="flex items-center gap-2 text-[11px] font-bold text-slate-700">
              <Phone size={11} className="text-slate-400" />
@@ -69,42 +69,53 @@ export default function BuildersPage() {
     },
     {
       header: "Plan & Resources",
-      key: "planId",
-      render: (item: any) => (
-        <div className="space-y-2">
-          <div className="flex items-center gap-2">
-            <span className={cn(
-              "text-[10px] font-bold px-2 py-0.5 rounded uppercase",
-              item.planId?.planName === 'Enterprise' ? "bg-emerald-100 text-emerald-700" : "bg-indigo-100 text-indigo-700"
-            )}>
-              {item.planId?.planName}
-            </span>
-            <span className="text-[10px] text-slate-400 font-bold uppercase">{item.planId?.duration}</span>
+      key: "subscriptions",
+      render: (item: Builder) => {
+        const activeSub = item.subscriptions.find((s: Subscription) => s.status === 'active');
+        const upcomingSub = item.subscriptions.find((s: Subscription) => s.status === 'upcoming');
+        return (
+          <div className="space-y-2">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className={cn(
+                "text-[10px] font-bold px-2 py-0.5 rounded uppercase",
+                activeSub?.planName === 'Enterprise' ? "bg-indigo-100 text-indigo-700" : "bg-slate-100 text-slate-700"
+              )}>
+                {activeSub?.planName || 'No Active Plan'}
+              </span>
+              {upcomingSub && (
+                <span className="text-[9px] font-bold px-1.5 py-0.5 bg-emerald-50 text-emerald-600 rounded-full border border-emerald-100 animate-pulse">
+                  Upcoming Renewal
+                </span>
+              )}
+            </div>
+            <div className="flex gap-2 text-[10px] font-bold text-slate-500">
+               <span className="flex items-center gap-1"><HardHat size={10} /> {item.currentLimits.noOfSites}</span>
+               <span className="flex items-center gap-1"><Layers size={10} /> {item.currentLimits.noOfStaff}</span>
+            </div>
           </div>
-          <div className="flex gap-2 text-[10px] font-bold text-slate-500">
-             <span className="flex items-center gap-1"><HardHat size={10} /> {item.planId?.noOfSites}</span>
-             <span className="flex items-center gap-1"><Layers size={10} /> {item.planId?.noOfStaff}</span>
-          </div>
-        </div>
-      )
+        );
+      }
     },
     {
       header: "Financials",
-      key: "amountPaid",
-      render: (item: any) => (
-        <div className="space-y-1">
-          <div className="text-sm font-black text-slate-900">₹{item.amountPaid?.toLocaleString()}</div>
-          <div className="flex items-center gap-1 text-[10px] text-slate-400 font-bold uppercase transition-colors hover:text-accent cursor-pointer group">
-             <Calendar size={10} />
-             {new Date(item.subscriptionEndDate).toLocaleDateString()}
+      key: "billing",
+      render: (item: Builder) => {
+        const activeSub = item.subscriptions.find((s: Subscription) => s.status === 'active');
+        return (
+          <div className="space-y-1">
+            <div className="text-sm font-black text-slate-900">₹{activeSub?.amountPaid?.toLocaleString()}</div>
+            <div className="flex items-center gap-1 text-[10px] text-slate-400 font-bold uppercase transition-colors hover:text-accent cursor-pointer group">
+               <Calendar size={10} />
+               {activeSub ? new Date(activeSub.endDate).toLocaleDateString() : 'N/A'}
+            </div>
           </div>
-        </div>
-      )
+        );
+      }
     },
     {
       header: "Status",
       key: "isActive",
-      render: (item: any) => (
+      render: (item: Builder) => (
         <span className={cn(
           "text-[10px] font-bold px-2.5 py-1 rounded-full uppercase",
           item.isActive ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"
