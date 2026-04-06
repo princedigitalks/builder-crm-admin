@@ -38,20 +38,29 @@ export interface BuilderState {
   builders: Builder[];
   loading: boolean;
   error: string | null;
+  pagination: {
+    totalItems: number;
+    totalPages: number;
+    currentPage: number;
+    limit: number;
+  } | null;
 }
 
 const initialState: BuilderState = {
   builders: [],
   loading: false,
   error: null,
+  pagination: null,
 };
 
 export const fetchAllBuilders = createAsyncThunk(
   'builder/fetchAllBuilders',
-  async (_, { rejectWithValue }) => {
+  async ({ page = 1, search = '' }: { page?: number; search?: string }, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/builder/all`);
-      return response.data.data;
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/builder/all?page=${page}&search=${search}&limit=10`
+      );
+      return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || 'Failed to fetch builders');
     }
@@ -70,7 +79,8 @@ const builderSlice = createSlice({
       })
       .addCase(fetchAllBuilders.fulfilled, (state, action) => {
         state.loading = false;
-        state.builders = action.payload;
+        state.builders = action.payload.data;
+        state.pagination = action.payload.pagination;
       })
       .addCase(fetchAllBuilders.rejected, (state, action) => {
         state.loading = false;
