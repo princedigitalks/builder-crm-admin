@@ -9,15 +9,41 @@ import { fetchPlans, Plan, PlanState, updatePlan, deletePlan } from '@/redux/sli
 import {
   Loader2, Plus, Users, Globe, MessageSquare,
   Search, Trash2, Edit3, Sparkles,
-  Calendar, Filter, ArrowRight, CheckCircle2, XCircle, Crown, Zap, Star
+  Filter, CheckCircle2, Crown, Zap, Star,
+  ShieldCheck, BarChart3, Infinity
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const PLAN_THEMES = [
-  { gradient: 'from-violet-500 to-indigo-600', light: 'bg-violet-50', text: 'text-violet-600', border: 'border-violet-100', icon: <Crown size={20} /> },
-  { gradient: 'from-emerald-400 to-teal-500', light: 'bg-emerald-50', text: 'text-emerald-600', border: 'border-emerald-100', icon: <Zap size={20} /> },
-  { gradient: 'from-amber-400 to-orange-500', light: 'bg-amber-50', text: 'text-amber-600', border: 'border-amber-100', icon: <Star size={20} /> },
-  { gradient: 'from-pink-500 to-rose-500', light: 'bg-pink-50', text: 'text-pink-600', border: 'border-pink-100', icon: <Sparkles size={20} /> },
+  { 
+    gradient: 'from-indigo-600 to-violet-600', 
+    light: 'bg-indigo-50', 
+    text: 'text-indigo-600', 
+    border: 'border-indigo-100', 
+    icon: <Crown size={16} /> 
+  },
+  { 
+    gradient: 'from-emerald-500 to-teal-500', 
+    light: 'bg-emerald-50', 
+    text: 'text-emerald-600', 
+    border: 'border-emerald-100', 
+    icon: <Zap size={16} /> 
+  },
+  { 
+    gradient: 'from-amber-500 to-orange-500', 
+    light: 'bg-amber-50', 
+    text: 'text-amber-600', 
+    border: 'border-amber-100', 
+    icon: <Star size={16} /> 
+  },
+  { 
+    gradient: 'from-rose-500 to-pink-500', 
+    light: 'bg-pink-50', 
+    text: 'text-pink-600', 
+    border: 'border-pink-100', 
+    icon: <Sparkles size={16} /> 
+  },
 ];
 
 export default function SubscriptionsPage() {
@@ -45,7 +71,7 @@ export default function SubscriptionsPage() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Permanently delete this plan?')) return;
+    if (!confirm('Permanently delete this tier?')) return;
     setDeletingId(id);
     try {
       await dispatch(deletePlan(id)).unwrap();
@@ -61,206 +87,169 @@ export default function SubscriptionsPage() {
     p.planName.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const activePlans = plans.filter(p => p.status === 'active').length;
-
   return (
-    <div className="max-w-7xl mx-auto space-y-8 pb-16">
-
-      {/* Header */}
-      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+    <div className="max-w-7xl mx-auto space-y-6 pb-20 px-6">
+      
+      {/* High-Density Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-2 border-b border-slate-100 pb-6">
         <div>
-          <div className="flex items-center gap-2 mb-2">
-            <div className="w-6 h-6 rounded-lg bg-accent flex items-center justify-center">
-              <Sparkles size={12} className="text-white" />
-            </div>
-            <span className="text-[10px] font-black text-accent tracking-[4px] uppercase">Super Admin Portal</span>
-          </div>
-          <h1 className="text-4xl font-black text-slate-900 tracking-tight leading-none">Subscription Plans</h1>
-          <p className="text-sm text-slate-400 font-medium mt-2">Manage pricing tiers and platform limits for all builders</p>
+          <h1 className="text-2xl font-black text-slate-900 tracking-tight leading-none mb-1">Subscription Tiers</h1>
+          <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Workspace Capacity Console</p>
         </div>
-        <button
-          onClick={handleCreate}
-          className="flex items-center gap-2.5 bg-slate-900 hover:bg-slate-800 text-white px-6 py-3.5 rounded-2xl text-xs font-black tracking-widest transition-all shadow-xl shadow-slate-200 active:scale-[0.97] w-fit"
-        >
-          <Plus size={16} strokeWidth={3} />
-          ADD NEW PLAN
-        </button>
-      </div>
-
-      {/* Stats + Search Bar */}
-      <div className="grid grid-cols-1 xl:grid-cols-4 gap-4">
-        <div className="xl:col-span-2 relative group">
-          <Search size={18} className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-accent transition-colors" strokeWidth={2.5} />
-          <input
-            type="text"
-            placeholder="Search plans..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-14 pr-5 py-4 bg-white border border-slate-100 rounded-2xl text-sm font-semibold placeholder:text-slate-300 focus:outline-none focus:ring-4 focus:ring-accent/10 focus:border-accent transition-all shadow-sm"
-          />
-        </div>
-        <div className="bg-white border border-slate-100 rounded-2xl px-6 py-4 flex items-center gap-4 shadow-sm">
-          <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400">
-            <Filter size={18} />
+        
+        <div className="flex items-center gap-3">
+          <div className="relative group">
+            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-slate-900 transition-colors pointer-events-none" />
+            <input
+              type="text"
+              placeholder="Search tiers..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-9 pr-4 py-2 bg-slate-50 border border-slate-100 rounded-xl text-xs font-bold placeholder:text-slate-200 focus:outline-none focus:bg-white focus:border-slate-300 transition-all w-48 sm:w-64"
+            />
           </div>
-          <div>
-            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Total Plans</p>
-            <p className="text-2xl font-black text-slate-900 leading-none mt-0.5">{plans.length}</p>
-          </div>
-        </div>
-        <div className="bg-emerald-50 border border-emerald-100 rounded-2xl px-6 py-4 flex items-center gap-4 shadow-sm">
-          <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-500">
-            <CheckCircle2 size={18} />
-          </div>
-          <div>
-            <p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest">Active</p>
-            <p className="text-2xl font-black text-emerald-600 leading-none mt-0.5">{activePlans}</p>
-          </div>
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={handleCreate}
+            className="flex items-center gap-2 bg-slate-900 px-5 py-2.5 rounded-xl text-[10px] font-black text-white tracking-widest transition-all shadow-lg shadow-slate-200 uppercase"
+          >
+            <Plus size={14} strokeWidth={4} />
+            Add Plan
+          </motion.button>
         </div>
       </div>
 
-      {/* Content */}
+      {/* Snapshot Stats (Compact) */}
+      <div className="flex items-center gap-6">
+         <div className="flex items-center gap-2">
+            <div className="w-2 h-2 rounded-full bg-slate-900" />
+            <span className="text-[10px] font-black text-slate-400 tracking-widest uppercase">Total: {plans.length}</span>
+         </div>
+         <div className="flex items-center gap-2">
+            <div className="w-2 h-2 rounded-full bg-emerald-500" />
+            <span className="text-[10px] font-black text-slate-400 tracking-widest uppercase">Active: {plans.filter(p => p.status === 'active').length}</span>
+         </div>
+      </div>
+
+      {/* Miniature Card Grid */}
       {loading && plans.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-40 bg-white rounded-3xl border border-slate-100">
-          <Loader2 size={32} className="animate-spin text-accent mb-4" />
-          <p className="text-[10px] font-black text-slate-400 tracking-[4px] uppercase">Loading Plans...</p>
+        <div className="flex flex-col items-center justify-center py-32 bg-white rounded-3xl border border-slate-50">
+          <Loader2 size={24} className="animate-spin text-slate-200 mb-4" />
+          <p className="text-[10px] font-black text-slate-300 tracking-[0.2em] uppercase">Syncing</p>
         </div>
       ) : filteredPlans.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-40 bg-white rounded-3xl border border-slate-100">
-          <div className="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center mb-5 text-slate-200">
-            <Filter size={36} strokeWidth={1} />
-          </div>
-          <p className="text-sm font-black text-slate-400 uppercase tracking-widest">No plans found</p>
-          {searchQuery && (
-            <button onClick={() => setSearchQuery('')} className="mt-4 text-xs font-black text-accent hover:underline flex items-center gap-1.5">
-              CLEAR SEARCH <ArrowRight size={13} />
-            </button>
-          )}
+        <div className="flex flex-col items-center justify-center py-32 bg-white rounded-3xl border border-slate-100 border-dashed border-2">
+          <p className="text-[10px] font-black text-slate-300 tracking-widest uppercase">No subscription models found</p>
+          <button onClick={() => setSearchQuery('')} className="mt-2 text-[9px] font-black text-slate-400 hover:text-slate-900 uppercase">Reset</button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-          {filteredPlans.map((plan, index) => {
-            const theme = PLAN_THEMES[index % PLAN_THEMES.length];
-            const isDeleting = deletingId === plan._id;
-            return (
-              <div
-                key={plan._id}
-                className={cn(
-                  "group bg-white rounded-3xl border shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col",
-                  plan.status === 'inactive' ? "border-slate-100 opacity-60" : "border-slate-100 hover:-translate-y-1"
-                )}
-              >
-                {/* Card Top Gradient Banner */}
-                <div className={cn("h-2 w-full bg-gradient-to-r", theme.gradient)} />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <AnimatePresence mode="popLayout">
+            {filteredPlans.map((plan, index) => {
+              const theme = PLAN_THEMES[index % PLAN_THEMES.length];
+              const isDeleting = deletingId === plan._id;
+              const isActive = plan.status === 'active';
 
-                <div className="p-6 flex flex-col flex-1 gap-5">
-                  {/* Plan Header */}
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className={cn("w-11 h-11 rounded-2xl flex items-center justify-center bg-gradient-to-br text-white shadow-lg", theme.gradient)}>
-                        {theme.icon}
-                      </div>
-                      <div>
-                        <h3 className="text-base font-black text-slate-900 group-hover:text-accent transition-colors">{plan.planName}</h3>
-                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">#{plan._id?.slice(-6).toUpperCase()}</p>
-                      </div>
+              return (
+                <motion.div
+                  layout
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  whileHover={{ y: -4 }}
+                  key={plan._id}
+                  className={cn(
+                    "group relative bg-white border rounded-2xl p-5 flex flex-col transition-all duration-300",
+                    isActive ? "border-slate-100 shadow-sm hover:shadow-xl hover:border-slate-200" : "border-slate-100 opacity-60 bg-slate-50/50"
+                  )}
+                >
+                  {/* Miniature Header */}
+                  <div className="flex items-center justify-between mb-5">
+                    <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center text-white shadow-xl bg-gradient-to-br", theme.gradient)}>
+                      {theme.icon}
                     </div>
                     <div className={cn(
-                      "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider",
-                      plan.status === 'active' ? "bg-emerald-50 text-emerald-600" : "bg-slate-100 text-slate-400"
-                    )}>
-                      {plan.status === 'active' ? <CheckCircle2 size={11} /> : <XCircle size={11} />}
-                      {plan.status}
+                      "group/switch relative w-9 h-4.5 rounded-full p-[2px] transition-colors cursor-pointer",
+                      isActive ? "bg-slate-900" : "bg-slate-200"
+                    )} onClick={() => handleToggleStatus(plan)}>
+                      <motion.div 
+                        animate={{ x: isActive ? 18 : 0 }}
+                        className="w-3.5 h-3.5 bg-white rounded-full shadow-sm"
+                      />
                     </div>
                   </div>
 
-                  {/* Price */}
-                  <div className={cn("rounded-2xl p-4 flex items-center justify-between", theme.light, theme.border, "border")}>
-                    <div>
-                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Price</p>
-                      <div className="flex items-baseline gap-1">
-                        <span className={cn("text-sm font-bold", theme.text)}>₹</span>
-                        <span className="text-3xl font-black text-slate-900">{plan.price.toLocaleString()}</span>
-                      </div>
-                    </div>
-                    <div className={cn("flex items-center gap-1.5 px-3 py-2 bg-white rounded-xl border text-xs font-black uppercase", theme.border, theme.text)}>
-                      <Calendar size={12} />
-                      {plan.duration}
+                  {/* Body: Compact Title & Price */}
+                  <div>
+                    <h3 className="text-sm font-black text-slate-900 mb-1 truncate">{plan.planName}</h3>
+                    <div className="flex items-baseline gap-1 mb-6">
+                      <span className="text-xs font-bold text-slate-400">₹</span>
+                      <span className="text-2xl font-black text-slate-900 leading-none">{plan.price.toLocaleString()}</span>
+                      <span className="text-[10px] font-black text-slate-400 uppercase ml-1">/{plan.duration.slice(0, 3)}</span>
                     </div>
                   </div>
 
-                  {/* Limits */}
-                  <div className="grid grid-cols-3 gap-3">
+                  {/* Feature Strip: One-Liner Icons */}
+                  <div className="flex items-center gap-4 border-t border-slate-50 pt-5 mb-5">
                     {[
-                      { icon: <Users size={15} />, label: 'Staff', value: plan.noOfStaff, color: 'text-indigo-500', bg: 'bg-indigo-50' },
-                      { icon: <Globe size={15} />, label: 'Sites', value: plan.noOfSites, color: 'text-teal-500', bg: 'bg-teal-50' },
-                      { icon: <MessageSquare size={15} />, label: 'WhatsApp', value: plan.noOfWhatsapp, color: 'text-amber-500', bg: 'bg-amber-50' },
-                    ].map((cap, i) => (
-                      <div key={i} className="flex flex-col items-center bg-slate-50 rounded-2xl py-3 px-2 gap-1.5">
-                        <div className={cn("w-8 h-8 rounded-xl flex items-center justify-center", cap.bg, cap.color)}>
-                          {cap.icon}
-                        </div>
-                        <span className="text-base font-black text-slate-800 leading-none">{cap.value === 0 ? '∞' : cap.value}</span>
-                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-tight leading-none">{cap.label}</span>
+                      { icon: <Users size={12} />, value: plan.noOfStaff },
+                      { icon: <Globe size={12} />, value: plan.noOfSites },
+                      { icon: <MessageSquare size={12} />, value: plan.noOfWhatsapp },
+                    ].map((item, i) => (
+                      <div key={i} className="flex items-center gap-1.5 min-w-[32px]">
+                        <span className="text-slate-300">{item.icon}</span>
+                        <span className="text-xs font-black text-slate-900 leading-none">
+                          {item.value === 0 ? <Infinity size={12} strokeWidth={3} /> : item.value}
+                        </span>
                       </div>
                     ))}
                   </div>
 
-                  {/* Actions */}
-                  <div className="flex items-center gap-3 mt-auto pt-1">
-                    {/* Toggle */}
-                    <button
-                      onClick={() => handleToggleStatus(plan)}
-                      className={cn(
-                        "relative w-12 h-6 rounded-full transition-all duration-300 flex items-center px-1 shadow-inner flex-shrink-0",
-                        plan.status === 'active' ? "bg-emerald-500" : "bg-slate-200"
-                      )}
-                    >
-                      <div className={cn(
-                        "w-4 h-4 bg-white rounded-full shadow transition-transform duration-300",
-                        plan.status === 'active' ? "translate-x-6" : "translate-x-0"
-                      )} />
-                    </button>
-                    <span className={cn("text-[10px] font-black uppercase tracking-widest flex-1", plan.status === 'active' ? "text-emerald-500" : "text-slate-400")}>
-                      {plan.status === 'active' ? 'Live' : 'Paused'}
-                    </span>
+                  {/* Integrated Action Row (Visible on Hover in Desktop, always on mobile) */}
+                  <div className="mt-auto flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                     <button
                       onClick={() => handleEdit(plan)}
-                      className="w-9 h-9 bg-slate-50 hover:bg-accent hover:text-white border border-slate-100 rounded-xl text-slate-400 transition-all flex items-center justify-center"
-                      title="Edit Plan"
+                      className="flex-1 py-1.5 bg-slate-50 hover:bg-slate-900 hover:text-white rounded-lg text-slate-400 transition-all flex items-center justify-center gap-2"
                     >
-                      <Edit3 size={15} strokeWidth={2.5} />
+                      <Edit3 size={11} strokeWidth={3} />
+                      <span className="text-[9px] font-black uppercase tracking-widest">Update</span>
                     </button>
                     <button
                       onClick={() => handleDelete(plan._id!)}
                       disabled={isDeleting}
-                      className="w-9 h-9 bg-red-50 hover:bg-red-500 hover:text-white border border-red-100 rounded-xl text-red-400 transition-all flex items-center justify-center disabled:opacity-50"
-                      title="Delete Plan"
+                      className="p-1.5 bg-rose-50 hover:bg-rose-500 hover:text-white rounded-lg text-rose-400 transition-all border border-rose-100"
                     >
-                      {isDeleting ? <Loader2 size={15} className="animate-spin" /> : <Trash2 size={15} strokeWidth={2.5} />}
+                      {isDeleting ? <Loader2 size={11} className="animate-spin" /> : <Trash2 size={11} strokeWidth={3} />}
                     </button>
                   </div>
-                </div>
-              </div>
-            );
-          })}
 
-          {/* Add New Plan Card */}
-          <button
-            onClick={handleCreate}
-            className="group bg-slate-50 hover:bg-white border-2 border-dashed border-slate-200 hover:border-accent rounded-3xl p-6 flex flex-col items-center justify-center gap-3 transition-all duration-300 min-h-[320px] hover:shadow-xl hover:-translate-y-1"
-          >
-            <div className="w-14 h-14 rounded-2xl bg-white group-hover:bg-accent border border-slate-200 group-hover:border-accent flex items-center justify-center text-slate-300 group-hover:text-white transition-all shadow-sm">
-              <Plus size={24} strokeWidth={2.5} />
-            </div>
-            <div className="text-center">
-              <p className="text-sm font-black text-slate-400 group-hover:text-accent transition-colors uppercase tracking-widest">New Plan</p>
-              <p className="text-xs text-slate-300 font-medium mt-1">Click to create</p>
-            </div>
-          </button>
+                  {/* Small Ghost Badge for Status (if disabled) */}
+                  {!isActive && (
+                    <div className="absolute top-2 right-2 px-1.5 py-0.5 bg-slate-100 rounded text-[7px] font-black text-slate-400 uppercase tracking-widest">
+                       Disabled
+                    </div>
+                  )}
+                </motion.div>
+              );
+            })}
+
+            {/* Ghost Mini Plan Block */}
+            <motion.button
+               whileTap={{ scale: 0.98 }}
+               onClick={handleCreate}
+               className="group relative bg-slate-50/50 border-2 border-dashed border-slate-100 hover:border-slate-200 rounded-2xl p-5 flex flex-col items-center justify-center transition-all duration-300 min-h-[220px]"
+            >
+              <div className="w-10 h-10 rounded-xl bg-white border border-slate-100 flex items-center justify-center text-slate-200 group-hover:bg-slate-900 group-hover:text-white group-hover:border-slate-900 transition-all duration-300 shadow-sm">
+                <Plus size={20} strokeWidth={3} />
+              </div>
+              <p className="mt-3 text-[10px] font-black text-slate-400 uppercase tracking-widest">Custom Tier</p>
+            </motion.button>
+          </AnimatePresence>
         </div>
       )}
 
+      {/* Modal */}
       <PlanModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
