@@ -36,7 +36,6 @@ export const Sidebar = () => {
     { id: 'subscriptions', label: 'Subscriptions', icon: CreditCard, href: '/subscriptions', section: 'Management' },
     { id: 'whatsapp', label: 'WhatsApp', icon: MessageSquare, href: '/whatsapp', section: 'Management' },
     { id: 'analytics', label: 'Analytics', icon: BarChart3, href: '/analytics', section: 'Management' },
-    { id: 'status', label: 'Pipeline Status', icon: ListTodo, href: '/status', section: 'Configuration' },
     { id: 'settings', label: 'Settings', icon: Settings, href: '/settings', section: 'Configuration' },
   ];
 
@@ -94,6 +93,8 @@ export const Sidebar = () => {
           </div>
         ))}
       </nav>
+
+
 
       <div className="p-4 border-t border-slate-100 space-y-2">
         <div className="flex items-center gap-3 p-2 rounded-xl bg-slate-50/50">
