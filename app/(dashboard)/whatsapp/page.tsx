@@ -4,9 +4,9 @@ import React, { useState } from 'react';
 import { Smartphone, Globe, MessageSquare, ToggleLeft as Toggle, ToggleRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { builders as mockBuilders } from '@/lib/mock-data';
-import CommonTable from '@/components/CommonTable';
+import CommonTable from '@/components/ui/CommonTable';
 
-export default function WhatsAppPage() {
+export default function WhatsAppAdminPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [data, setData] = useState(mockBuilders.map(b => ({

@@ -18,6 +18,7 @@ export default function DashboardLayout({
     if (pathname.startsWith('/subscriptions')) return { title: 'Subscription & Plans', sub: 'Manage plans and track renewals' };
     if (pathname.startsWith('/whatsapp')) return { title: 'WhatsApp Control', sub: 'Monitor API usage and message logs across all builders' };
     if (pathname.startsWith('/analytics')) return { title: 'Global Analytics', sub: 'Platform-wide performance and conversion metrics' };
+    if (pathname.startsWith('/status')) return { title: 'Pipeline Status', sub: 'Configure lead stages and Kanban board order' };
     if (pathname.startsWith('/settings')) return { title: 'Settings', sub: 'Manage platform settings and configuration' };
     return { title: 'BuildFlow', sub: 'Super Admin' };
   };

@@ -10,7 +10,8 @@ import {
   MessageSquare, 
   BarChart3, 
   Settings,
-  LogOut
+  LogOut,
+  ListTodo
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useDispatch } from 'react-redux';
@@ -27,6 +28,24 @@ export const Sidebar = () => {
     dispatch(logout());
     toast.success("Signed out successfully");
     router.push('/login');
+  };
+
+  const navItems = [
+    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, href: '/', section: 'Management' },
+    { id: 'builders', label: 'Builders', icon: Users, href: '/builders', section: 'Management' },
+    { id: 'subscriptions', label: 'Subscriptions', icon: CreditCard, href: '/subscriptions', section: 'Management' },
+    { id: 'whatsapp', label: 'WhatsApp', icon: MessageSquare, href: '/whatsapp', section: 'Management' },
+    { id: 'analytics', label: 'Analytics', icon: BarChart3, href: '/analytics', section: 'Management' },
+    { id: 'status', label: 'Pipeline Status', icon: ListTodo, href: '/status', section: 'Configuration' },
+    { id: 'settings', label: 'Settings', icon: Settings, href: '/settings', section: 'Configuration' },
+  ];
+
+  const sections = ['Management', 'Configuration'];
+
+  const isActive = (href: string) => {
+    if (href === '/' && pathname === '/') return true;
+    if (href !== '/' && pathname.startsWith(href)) return true;
+    return false;
   };
 
   return (

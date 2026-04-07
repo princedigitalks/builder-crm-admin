@@ -6,8 +6,8 @@ import { cn } from '@/lib/utils';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/redux/store';
 import { fetchAllBuilders, Builder, Subscription } from '@/redux/slices/builderSlice';
-import CommonTable from '@/components/CommonTable';
-import { motion } from 'framer-motion';
+import CommonTable from '@/components/ui/CommonTable';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function BuildersPage() {
   const dispatch = useDispatch<AppDispatch>();
