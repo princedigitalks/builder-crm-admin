@@ -4,7 +4,7 @@ import React from 'react';
 import { Search, Bell, Plus, LogOut } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useDispatch } from 'react-redux';
-import { setAuth } from '@/redux/slices/authSlice';
+import { logout } from '@/redux/slices/authSlice';
 import { toast } from 'react-hot-toast';
 
 interface TopbarProps {
@@ -17,8 +17,7 @@ export const Topbar = ({ title, sub }: TopbarProps) => {
   const dispatch = useDispatch();
 
   const handleLogout = () => {
-    document.cookie = "admin_token=; path=/; max-age=0";
-    dispatch(setAuth({ user: null, token: null }));
+    dispatch(logout());
     toast.success("Signed out successfully");
     router.push('/login');
   };

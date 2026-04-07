@@ -7,6 +7,7 @@ import { AppDispatch, RootState } from '@/redux/store';
 import { createPlan, updatePlan, Plan, PlanState } from '@/redux/slices/planSlice';
 import { toast } from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
+import { cn } from '@/lib/utils';
 
 interface PlanModalProps {
   isOpen: boolean;

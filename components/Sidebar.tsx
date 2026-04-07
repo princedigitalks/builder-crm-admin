@@ -28,15 +28,6 @@ interface NavItem {
   badge?: number | string;
 }
 
-interface NavItem {
-  id: string;
-  label: string;
-  icon: any;
-  href: string;
-  section: string;
-  badge?: number | string;
-}
-
 export const Sidebar = () => {
   const pathname = usePathname();
   const dispatch = useDispatch();
@@ -48,7 +39,7 @@ export const Sidebar = () => {
     router.push('/login');
   };
 
-  const navItems = [
+  const navItems: NavItem[] = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, href: '/', section: 'Management' },
     { id: 'builders', label: 'Builders', icon: Users, href: '/builders', section: 'Management' },
     { id: 'subscriptions', label: 'Subscriptions', icon: CreditCard, href: '/subscriptions', section: 'Management' },
@@ -84,7 +75,7 @@ export const Sidebar = () => {
           <div key={section}>
              <p className="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-[0.15em] mb-4">{section}</p>
              <div className="space-y-1">
-              {navItems.filter(item => item.section === section).map(item => (
+              {navItems.filter(item => item.section === section).map((item: NavItem) => (
                 <Link
                   key={item.id}
                   href={item.href}
