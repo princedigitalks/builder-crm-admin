@@ -19,6 +19,24 @@ import { logout } from '@/redux/slices/authSlice';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast';
 
+interface NavItem {
+  id: string;
+  label: string;
+  icon: any;
+  href: string;
+  section: string;
+  badge?: number | string;
+}
+
+interface NavItem {
+  id: string;
+  label: string;
+  icon: any;
+  href: string;
+  section: string;
+  badge?: number | string;
+}
+
 export const Sidebar = () => {
   const pathname = usePathname();
   const dispatch = useDispatch();
@@ -36,10 +54,10 @@ export const Sidebar = () => {
     { id: 'subscriptions', label: 'Subscriptions', icon: CreditCard, href: '/subscriptions', section: 'Management' },
     { id: 'whatsapp', label: 'WhatsApp', icon: MessageSquare, href: '/whatsapp', section: 'Management' },
     { id: 'analytics', label: 'Analytics', icon: BarChart3, href: '/analytics', section: 'Management' },
-    { id: 'settings', label: 'Settings', icon: Settings, href: '/settings', section: 'Configuration' },
+    // { id: 'settings', label: 'Settings', icon: Settings, href: '/settings', section: 'Configuration' },
   ];
 
-  const sections = ['Management', 'Configuration'];
+  const sections = ['Management'];
 
   const isActive = (href: string) => {
     if (href === '/' && pathname === '/') return true;

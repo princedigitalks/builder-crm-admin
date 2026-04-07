@@ -82,11 +82,6 @@ export default function BuildersPage() {
               )}>
                 {activeSub?.planName || 'No Active Plan'}
               </span>
-              {upcomingSub && (
-                <span className="text-[9px] font-bold px-1.5 py-0.5 bg-emerald-50 text-emerald-600 rounded-full border border-emerald-100 animate-pulse">
-                  Upcoming Renewal
-                </span>
-              )}
             </div>
             <div className="flex gap-2 text-[10px] font-bold text-slate-500">
                <span className="flex items-center gap-1"><HardHat size={10} /> {item.currentLimits.noOfSites}</span>
