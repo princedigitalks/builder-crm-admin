@@ -12,6 +12,8 @@ interface TopbarProps {
   sub: string;
 }
 
+import { NotificationDropdown } from './NotificationDropdown';
+
 export const Topbar = ({ title, sub }: TopbarProps) => {
   const router = useRouter();
   const dispatch = useDispatch();
@@ -39,10 +41,7 @@ export const Topbar = ({ title, sub }: TopbarProps) => {
           />
         </div>
 
-        <button className="p-2.5 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-xl transition-all relative border border-transparent hover:border-slate-100 shadow-sm group">
-          <Bell size={18} className="group-hover:rotate-12 transition-transform" />
-          <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-rose-500 rounded-full border-2 border-white ring-2 ring-rose-500/20" />
-        </button>
+        <NotificationDropdown />
 
         <button 
           onClick={handleLogout}

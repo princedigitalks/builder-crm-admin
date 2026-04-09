@@ -28,6 +28,7 @@ interface CommonTableProps {
   searchValue: string;
   searchPlaceholder?: string;
   actionButton?: React.ReactNode;
+  rowClassName?: (item: any) => string;
 }
 
 export default function CommonTable({
@@ -40,7 +41,8 @@ export default function CommonTable({
   onSearchChange,
   searchValue,
   searchPlaceholder = "Search...",
-  actionButton
+  actionButton,
+  rowClassName
 }: CommonTableProps) {
   return (
     <div className="bg-white border border-slate-100 rounded-2xl shadow-sm overflow-hidden">
@@ -95,7 +97,10 @@ export default function CommonTable({
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     key={item.id || item._id || idx} 
-                    className="hover:bg-slate-50/50 transition-colors group"
+                    className={cn(
+                      "hover:bg-slate-50/50 transition-colors group",
+                      rowClassName?.(item)
+                    )}
                   >
                     {columns.map((col, i) => (
                       <td key={i} className={cn("px-6 py-4", col.className)}>
