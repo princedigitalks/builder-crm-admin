@@ -25,6 +25,7 @@ export default function AdminLoginPage() {
       // Backend should have a admin login endpoint
       const response = await axios.post('/admin/login', formData);
       if (response.data.success) {
+        console.log("[Admin Login] Success, Authorizing...");
         dispatch(setAuth({
           user: response.data.data.user,
           token: response.data.token
@@ -34,7 +35,8 @@ export default function AdminLoginPage() {
         document.cookie = `admin_token=${response.data.token}; path=/; max-age=86400; SameSite=Lax`;
         
         toast.success("Access Granted. Welcome, Admin.");
-        router.push('/');
+        console.log("[Admin Login] Redirecting to root dashboard...");
+        window.location.href = '/';
       }
     } catch (err: any) {
       toast.error(err.response?.data?.message || 'Unauthorized Access');
