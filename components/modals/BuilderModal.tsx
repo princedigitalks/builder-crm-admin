@@ -364,7 +364,7 @@ export default function BuilderModal({
                       <option value="">Select a plan</option>
                       {plans.map((plan) => (
                         <option key={plan._id} value={plan._id}>
-                          {plan.name} - ₹{plan.price}/year
+                          {plan.planName} (₹{plan.price}/{plan.duration === 'Annually' ? 'year' : plan.duration.toLowerCase()})
                         </option>
                       ))}
                     </select>
