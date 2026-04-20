@@ -13,13 +13,14 @@ export default function DashboardLayout({
   const pathname = usePathname();
 
   const getPageTitle = () => {
-    if (pathname === '/') return { title: 'Dashboard Overview', sub: "Welcome back — here's what's happening today" };
-    if (pathname.startsWith('/builders')) return { title: 'Builder Management', sub: 'Add, edit and manage all registered builders' };
-    if (pathname.startsWith('/subscriptions')) return { title: 'Subscription & Plans', sub: 'Manage plans and track renewals' };
-    if (pathname.startsWith('/whatsapp')) return { title: 'WhatsApp Control', sub: 'Monitor API usage and message logs across all builders' };
-    if (pathname.startsWith('/analytics')) return { title: 'Global Analytics', sub: 'Platform-wide performance and conversion metrics' };
-    if (pathname.startsWith('/status')) return { title: 'Pipeline Status', sub: 'Configure lead stages and Kanban board order' };
-    if (pathname.startsWith('/settings')) return { title: 'Settings', sub: 'Manage platform settings and configuration' };
+    if (pathname === '/') return { title: 'Dashboard', sub: "Here's what's happening today" };
+    if (pathname.startsWith('/leads')) return { title: 'Enquiry Leads', sub: 'Leads submitted from the landing page' };
+    if (pathname.startsWith('/builders')) return { title: 'Builders', sub: 'Manage all registered builders' };
+    if (pathname.startsWith('/subscriptions')) return { title: 'Subscriptions', sub: 'Manage plans and track renewals' };
+    if (pathname.startsWith('/whatsapp')) return { title: 'WhatsApp', sub: 'Monitor API usage across all builders' };
+    if (pathname.startsWith('/analytics')) return { title: 'Analytics', sub: 'Platform-wide performance metrics' };
+    if (pathname.startsWith('/status')) return { title: 'Pipeline Status', sub: 'Configure lead stages' };
+    if (pathname.startsWith('/settings')) return { title: 'Settings', sub: 'Platform configuration' };
     return { title: 'BuildFlow', sub: 'Super Admin' };
   };
 

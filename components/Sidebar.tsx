@@ -41,6 +41,7 @@ export const Sidebar = () => {
 
   const navItems: NavItem[] = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, href: '/', section: 'Management' },
+    { id: 'leads', label: 'Leads', icon: ListTodo, href: '/leads', section: 'Management' },
     { id: 'builders', label: 'Builders', icon: Users, href: '/builders', section: 'Management' },
     { id: 'subscriptions', label: 'Subscriptions', icon: CreditCard, href: '/subscriptions', section: 'Management' },
     { id: 'whatsapp', label: 'WhatsApp', icon: MessageSquare, href: '/whatsapp', section: 'Management' },

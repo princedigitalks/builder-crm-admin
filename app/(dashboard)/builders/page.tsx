@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState, useCallback } from 'react';
-import { MoreVertical, Mail, Phone, Calendar, Layers, HardHat, Plus, Edit3, Trash2 } from 'lucide-react';
+import { MoreVertical, Mail, Phone, Calendar, Layers, HardHat, Plus, Edit3, Trash2, MessageSquare } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/redux/store';
@@ -169,13 +169,26 @@ export default function BuildersPage() {
               </span>
               {upcomingSub && (
                 <span className="text-xs font-medium px-1.5 py-0.5 bg-emerald-50 text-emerald-600 rounded-full border border-emerald-100 animate-pulse">
-                  Upcoming Renewal
+                  Upcoming
                 </span>
               )}
             </div>
-            <div className="flex gap-2 text-xs text-slate-500">
-               <span className="flex items-center gap-1"><HardHat size={11} /> {item.currentLimits.noOfSites}</span>
-               <span className="flex items-center gap-1"><Layers size={11} /> {item.currentLimits.noOfStaff}</span>
+            <div className="flex items-center gap-3">
+              <span className="flex items-center gap-1 text-[11px] text-slate-500" title="Staff">
+                <Layers size={11} className="text-indigo-400" />
+                <span className="font-medium">{item.currentLimits.noOfStaff}</span>
+                <span className="text-slate-400">staff</span>
+              </span>
+              <span className="flex items-center gap-1 text-[11px] text-slate-500" title="Sites">
+                <HardHat size={11} className="text-amber-400" />
+                <span className="font-medium">{item.currentLimits.noOfSites}</span>
+                <span className="text-slate-400">sites</span>
+              </span>
+              <span className="flex items-center gap-1 text-[11px] text-slate-500" title="WhatsApp Numbers">
+                <MessageSquare size={11} className="text-emerald-400" />
+                <span className="font-medium">{item.currentLimits.noOfWhatsapp}</span>
+                <span className="text-slate-400">wa</span>
+              </span>
             </div>
           </div>
         );
