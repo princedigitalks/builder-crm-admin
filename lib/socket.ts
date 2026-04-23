@@ -16,7 +16,7 @@ export const getSocket = () => {
     console.log("[Socket Admin] Initializing to:", socketUrl, "path: /api/socket.io");
 
     socket = io(socketUrl, {
-      // path: "/api/socket.io",
+      path: "/api/socket.io",
       transports: ["websocket", "polling"],
     });
 
