@@ -7,6 +7,9 @@ export interface Site {
   whatsappNumber: string;
   whatsappStatus: string;
   chatbotStatus: string;
+  accessToken?: string;
+  apiVersion?: string;
+  phoneNumberId?: string;
   isDeleted: boolean;
   deleteRequested: boolean;
   builderId: {

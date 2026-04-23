@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Smartphone, Globe, ToggleLeft as Toggle, ToggleRight } from 'lucide-react';
+import { Smartphone, Globe, ToggleLeft as Toggle, ToggleRight, Key } from 'lucide-react';
+import WhatsAppCredentialsModal from '@/components/modals/WhatsAppCredentialsModal';
 import { cn } from '@/lib/utils';
 import { getSocket } from '@/lib/socket';
 import CommonTable from '@/components/ui/CommonTable';
@@ -10,12 +11,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '@/redux/store';
 import { fetchAdminSites, updateSiteStatus, syncSiteUpdate, syncStatusUpdate, Site } from '@/redux/slices/whatsappSiteSlice';
 import Swal from 'sweetalert2';
+import axiosInstance from '@/lib/axios';
 
 export default function WhatsAppAdminPage() {
   const dispatch = useDispatch<AppDispatch>();
   const { sites, loading } = useSelector((state: RootState) => state.whatsappSite);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [isCredModalOpen, setIsCredModalOpen] = useState(false);
+  const [selectedSite, setSelectedSite] = useState<Site | null>(null);
 
   useEffect(() => {
     dispatch(fetchAdminSites());
@@ -87,6 +91,38 @@ export default function WhatsAppAdminPage() {
       } catch (error: any) {
         toast.error(error || 'Failed to unlink WhatsApp');
       }
+    }
+  };
+
+  const handleOpenCredModal = async (site: Site) => {
+    setSelectedSite(site);
+    try {
+      // Fetch existing config for this number
+      const response = await axiosInstance.get(`/site/admin/whatsapp-config/${encodeURIComponent(site.whatsappNumber)}`);
+      if (response.data.data) {
+        setSelectedSite({ ...site, ...response.data.data });
+      }
+    } catch (error) {
+      console.error("Failed to fetch whatsapp config", error);
+    }
+    setIsCredModalOpen(true);
+  };
+
+  const handleSaveCredentials = async (data: any) => {
+    if (!selectedSite) return;
+    try {
+      const payload = {
+        number: selectedSite.whatsappNumber,
+        builderId: selectedSite.builderId._id,
+        ...data
+      };
+      await axiosInstance.post('/site/admin/whatsapp-config', payload);
+      toast.success('Credentials saved successfully');
+      setIsCredModalOpen(false);
+      // Refresh sites to get updated data if needed (though sites don't store these anymore)
+      dispatch(fetchAdminSites());
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'Failed to save credentials');
     }
   };
 
@@ -179,8 +215,16 @@ export default function WhatsAppAdminPage() {
       key: 'actions',
       className: 'text-right',
       render: (item: Site) => (
-        <button
-          onClick={() => handleUnlink(item._id, item.name)}
+        <div className="flex items-center justify-end gap-2">
+          <button
+            onClick={() => handleOpenCredModal(item)}
+            className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-slate-50 rounded-lg transition-all"
+            title="Add Credentials"
+          >
+            <Key size={14} />
+          </button>
+          <button
+            onClick={() => handleUnlink(item._id, item.name)}
           className={cn(
             "px-3 py-1.5 rounded-lg text-xs font-semibold transition-all border",
             (item.deleteRequested || item.isDeleted)
@@ -193,7 +237,8 @@ export default function WhatsAppAdminPage() {
         >
           {item.isDeleted ? 'Unlinked' : 'Unlink'}
         </button>
-      )
+      </div>
+    )
     }
   ];
 
@@ -225,6 +270,14 @@ export default function WhatsAppAdminPage() {
         }}
         searchPlaceholder="Filter Builder Endpoints..."
         rowClassName={(item) => (item.deleteRequested || item.isDeleted) ? "bg-rose-50/40 hover:bg-rose-50/60" : ""}
+      />
+
+      <WhatsAppCredentialsModal 
+        isOpen={isCredModalOpen}
+        onClose={() => setIsCredModalOpen(false)}
+        onSubmit={handleSaveCredentials}
+        initialData={selectedSite}
+        loading={loading}
       />
     </div>
   );
