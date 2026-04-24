@@ -1,15 +1,12 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import axiosInstance from '@/lib/axios';
 
-export interface Site {
+export interface WhatsappHub {
   _id: string;
   name: string;
-  whatsappNumber: string;
+  number: string;
   whatsappStatus: string;
   chatbotStatus: string;
-  accessToken?: string;
-  apiVersion?: string;
-  phoneNumberId?: string;
   isDeleted: boolean;
   deleteRequested: boolean;
   builderId: {
@@ -18,85 +15,85 @@ export interface Site {
   };
 }
 
-interface WhatsappSiteState {
-  sites: Site[];
+interface WhatsappHubState {
+  hubs: WhatsappHub[];
   loading: boolean;
   error: string | null;
 }
 
-const initialState: WhatsappSiteState = {
-  sites: [],
+const initialState: WhatsappHubState = {
+  hubs: [],
   loading: false,
   error: null,
 };
 
-export const fetchAdminSites = createAsyncThunk(
-  'whatsappSite/fetchAdminSites',
+export const fetchAdminWhatsappHubs = createAsyncThunk(
+  'whatsappHub/fetchAdminWhatsappHubs',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get('/site/admin/all');
+      const response = await axiosInstance.get('/whatsapp/admin/all');
       return response.data.data;
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to fetch sites');
+      return rejectWithValue(error.response?.data?.message || 'Failed to fetch hubs');
     }
   }
 );
 
-export const updateSiteStatus = createAsyncThunk(
-  'whatsappSite/updateSiteStatus',
+export const updateWhatsappHubStatus = createAsyncThunk(
+  'whatsappHub/updateWhatsappHubStatus',
   async ({ id, data }: { id: string; data: any }, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.patch(`/site/${id}/status`, data);
+      const response = await axiosInstance.patch(`/whatsapp/admin/${id}/status`, data);
       return response.data.data;
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to update site status');
+      return rejectWithValue(error.response?.data?.message || 'Failed to update hub status');
     }
   }
 );
 
-const whatsappSiteSlice = createSlice({
-  name: 'whatsappSite',
+const whatsappHubSlice = createSlice({
+  name: 'whatsappHub',
   initialState,
   reducers: {
-    syncSiteUpdate: (state, action: PayloadAction<{ action: 'add' | 'update'; site: Site }>) => {
+    syncHubUpdate: (state, action: PayloadAction<{ action: 'add' | 'update'; whatsapp: WhatsappHub }>) => {
       if (action.payload.action === 'add') {
-        state.sites.unshift(action.payload.site);
+        state.hubs.unshift(action.payload.whatsapp);
       } else {
-        const index = state.sites.findIndex((s) => s._id === action.payload.site._id);
+        const index = state.hubs.findIndex((h) => h._id === action.payload.whatsapp._id);
         if (index !== -1) {
-          state.sites[index] = action.payload.site;
+          state.hubs[index] = action.payload.whatsapp;
         }
       }
     },
-    syncStatusUpdate: (state, action: PayloadAction<{ siteId: string; whatsappStatus: string; chatbotStatus: string }>) => {
-      const site = state.sites.find((s) => s._id === action.payload.siteId);
-      if (site) {
-        site.whatsappStatus = action.payload.whatsappStatus;
-        site.chatbotStatus = action.payload.chatbotStatus;
+    syncStatusUpdate: (state, action: PayloadAction<{ whatsappId: string; whatsappStatus: string; chatbotStatus: string }>) => {
+      const hub = state.hubs.find((h) => h._id === action.payload.whatsappId);
+      if (hub) {
+        hub.whatsappStatus = action.payload.whatsappStatus;
+        hub.chatbotStatus = action.payload.chatbotStatus;
       }
     },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchAdminSites.pending, (state) => {
+      .addCase(fetchAdminWhatsappHubs.pending, (state) => {
         state.loading = true;
       })
-      .addCase(fetchAdminSites.fulfilled, (state, action) => {
+      .addCase(fetchAdminWhatsappHubs.fulfilled, (state, action) => {
         state.loading = false;
-        state.sites = action.payload;
+        state.hubs = action.payload;
       })
-      .addCase(fetchAdminSites.rejected, (state, action) => {
+      .addCase(fetchAdminWhatsappHubs.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })
-      .addCase(updateSiteStatus.fulfilled, (state, action) => {
-        const index = state.sites.findIndex((s) => s._id === action.payload._id);
+      .addCase(updateWhatsappHubStatus.fulfilled, (state, action) => {
+        const index = state.hubs.findIndex((h) => h._id === action.payload._id);
         if (index !== -1) {
-          state.sites[index] = action.payload;
+          state.hubs[index] = action.payload;
         }
       });
   },
 });
 
-export const { syncSiteUpdate, syncStatusUpdate } = whatsappSiteSlice.actions;
-export default whatsappSiteSlice.reducer;
+export const { syncHubUpdate, syncStatusUpdate } = whatsappHubSlice.actions;
+export default whatsappHubSlice.reducer;

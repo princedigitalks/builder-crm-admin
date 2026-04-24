@@ -26,7 +26,7 @@ export const fetchNotifications = createAsyncThunk(
   'notification/fetchNotifications',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get('/notification');
+      const response = await axiosInstance.get('/notifications');
       return response.data.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || 'Failed to fetch notifications');
@@ -38,7 +38,7 @@ export const markAsRead = createAsyncThunk(
   'notification/markAsRead',
   async (id: string, { rejectWithValue }) => {
     try {
-      await axiosInstance.patch(`/notification/${id}/read`);
+      await axiosInstance.patch(`/notifications/${id}/read`);
       return id;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || 'Failed to mark as read');
@@ -50,7 +50,7 @@ export const markAllAsRead = createAsyncThunk(
   'notification/markAllAsRead',
   async (_, { rejectWithValue }) => {
     try {
-      await axiosInstance.patch('/notification/read-all');
+      await axiosInstance.patch('/notifications/read-all');
       return true;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || 'Failed to mark all as read');

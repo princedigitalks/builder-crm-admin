@@ -12,6 +12,7 @@ import { fetchNotifications, markAsRead, markAllAsRead, addNotification, Notific
 export const NotificationDropdown = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { notifications } = useSelector((state: RootState) => state.notification);
+  const { user } = useSelector((state: RootState) => state.auth);
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -19,6 +20,9 @@ export const NotificationDropdown = () => {
     dispatch(fetchNotifications());
 
     const socket = getSocket();
+    if (user?._id) {
+      socket.emit('join', user._id);
+    }
     socket.on('admin_notification', (data: { notification: NotificationType }) => {
       dispatch(addNotification(data.notification));
       
@@ -50,7 +54,7 @@ export const NotificationDropdown = () => {
       socket.off('admin_notification');
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [dispatch]);
+  }, [dispatch, user]);
 
   const handleMarkAsRead = (id: string) => {
     dispatch(markAsRead(id));
